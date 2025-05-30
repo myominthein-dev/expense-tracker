@@ -26,16 +26,16 @@
                        <h2 class="text-lg font-semibold text-gray-400"> Date - {{ new Date().toISOString().split('T')[0] }}</h2>
                         <div class="grid grid-cols-3 gap-4 mt-5">
                             <div>
-                                <h4>Total Income</h4>
-                                <p>10000</p>
+                                <h4 class="text-green-400  font-semibold">Total Income</h4>
+                                <p class="text-xl">10000</p>
                             </div>
                             <div>
-                                <h4>Total Expense</h4>
-                                <p>5000</p>
+                                <h4 class="text-red-400  font-semibold">Total Expense</h4>
+                                <p class="text-xl">5000</p>
                             </div>
                             <div>
-                                <h4>Balance</h4>
-                                <p>5000</p>
+                                <h4 class="text-lg">Balance</h4>
+                                <p class="text-xl">5000</p>
                             </div>
                         </div>
                     </div>

@@ -3,7 +3,7 @@
 
         <div>
             <label >Date <i class="text-sm text-gray-400 ">(Today - default)</i></label>
-            <DatePicker v-model="incomeData.created_at" class="mt-3 w-full"/>
+            <DatePicker v-model="incomeDateFormatted" class="mt-3 w-full"/>
         </div>
          <div class="inline-flex flex-col gap-2 w-full">
                 <label for="incomeData" class="text-primary-50 font-semibold">Income</label>
@@ -41,7 +41,7 @@
 
 <script setup>
 
-import { reactive, ref } from 'vue';
+import { reactive, ref,computed } from 'vue';
 
 import { InputText } from 'primevue';
 
@@ -56,7 +56,7 @@ const expenseStore  = useExpenseStore();
 const incomeData = reactive({
     name: '',
     amount: '',
-    created_at : new Date().toISOString().split('T')[0] // Default to today's date
+    created_at : new Date().toISOString() // Default to today's date
 })
 
 const isLoading = ref(false);
@@ -68,11 +68,13 @@ const addIncome = async () => {
     const incomeToSave = {
         name: incomeData.name,
         amount: incomeData.amount,
-        created_at: incomeData.created_at,
+        created_at: new Date(incomeData.created_at).toISOString(),
         user_id: user.id,
         category_id : incomeCategoryId
     };
     if (!error) {
+        console.log(incomeToSave);
+        
         const {data ,error} = await supabase.from('expenses').insert(incomeToSave).select();
 
         if (data) {
@@ -88,6 +90,19 @@ const cancel = () => {
     incomeData.amount = '';
 }
 
+const incomeDateFormatted = computed({
+  get() {
+    return incomeData.created_at ? incomeData.created_at.split('T')[0] : '';
+  },
+  set(value) {
+    const currentTime = incomeData.created_at 
+      ? incomeData.created_at.split('T')[1] 
+      : '00:00:00.000Z';
+    
+    incomeData.created_at = `${value}T${currentTime}`;
+  }
+});
 
 
-</script>
+
+</script> 

@@ -6,7 +6,7 @@
         <div>
             <label>Date <i class="text-sm text-gray-400 ">(Today - default)</i></label>
 
-            <DatePicker v-model="expenseData.created_at" variant="filled" class=" mt-3 w-full" />
+            <DatePicker v-model="expenseDateFormatted" variant="filled" class=" mt-3 w-full" />
         </div>
         <div class="inline-flex flex-col gap-2 w-full">
             <label for="expense" class="text-primary-50 font-semibold">Expense</label>
@@ -44,7 +44,7 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, reactive, ref } from 'vue';
+import { onMounted, onUnmounted, reactive, ref,computed } from 'vue';
 import { InputText } from 'primevue';
 
 import DatePicker from 'primevue/datepicker';
@@ -60,7 +60,7 @@ const isLoading = ref(false)
 const expenseData = reactive({
     name: '',
     amount: '',
-    created_at: new Date().toISOString().split('T')[0] // Default to current date
+    created_at: new Date().toISOString()// Default to current date
 })
 
 const expenseCategoryId = 1
@@ -102,11 +102,16 @@ const cancel = () => {
     
 }
 
-onMounted(() => {
-    console.log('mounted');
-})
-
-onUnmounted(() => {
-    console.log('unmounted');
-})
+const expenseDateFormatted = computed({
+  get() {
+    return expenseData.created_at ? expenseData.created_at.split('T')[0] : '';
+  },
+  set(value) {
+    const currentTime = expenseData.created_at 
+      ? expenseData.created_at.split('T')[1] 
+      : '00:00:00.000Z';
+    
+    expenseData.created_at = `${value}T${currentTime}`;
+  }
+});
 </script>
