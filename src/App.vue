@@ -44,7 +44,7 @@ onBeforeMount(async () => {
       .from('expenses')
       .select('*')
       .eq('user_id', user.id);
-
+      
       expenseStore.setExpenses(data);
     }
     

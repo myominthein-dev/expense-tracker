@@ -6,11 +6,11 @@
         <div>
             <label>Date <i class="text-sm text-gray-400 ">(Today - default)</i></label>
 
-            <DatePicker v-model="expenseDateFormatted" variant="filled" class=" mt-3 w-full" />
+            <DatePicker v-model="expenseData.created_at" variant="filled" class=" mt-3 w-full" />
         </div>
         <div class="inline-flex flex-col gap-2 w-full">
             <label for="expense" class="text-primary-50 font-semibold">Expense</label>
-            <InputText id="expense" v-model="expenseData.name"
+            <InputText  id="expense" v-model="expenseData.name"
                 class="bg-white/20! outline-sky-900!  !border-0 !p-2 !text-primary-50 w-full"></InputText>
 
         </div>
@@ -44,7 +44,7 @@
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, reactive, ref,computed } from 'vue';
+import { onMounted, onUnmounted, reactive, ref, computed } from 'vue';
 import { InputText } from 'primevue';
 
 import DatePicker from 'primevue/datepicker';
@@ -60,7 +60,9 @@ const isLoading = ref(false)
 const expenseData = reactive({
     name: '',
     amount: '',
-    created_at: new Date().toISOString()// Default to current date
+    created_at: new Date().toLocaleDateString('en-CA', {
+        timeZone: 'Asia/Yangon',
+    })
 })
 
 const expenseCategoryId = 1
@@ -72,17 +74,20 @@ const addExpense = async () => {
             name: expenseData.name,
             amount: parseFloat(expenseData.amount),
             category_id: expenseCategoryId,
-            created_at: new Date(expenseData.created_at).toISOString()
+            created_at: new Date(expenseData.created_at).toLocaleDateString('en-CA', {
+                timeZone: 'Asia/Yangon',
+            })
         }
 
-        if (!error) {
-            const {data, error} = await supabase.from('expenses').insert({ ...expenseInfo, user_id: user.id }).select()
 
-           
+        if (!error) {
+            const { data, error } = await supabase.from('expenses').insert({ ...expenseInfo, user_id: user.id }).select()
+
+
             if (data) {
-                 expenseStore.setExpense(data[0]);
+                expenseStore.setExpense(data[0]);
             }
-           
+
             isLoading.value = false;
 
         }
@@ -90,28 +95,19 @@ const addExpense = async () => {
         console.log(err);
         isLoading.value = false;
     } finally {
-         expenseData.name = '';
-            expenseData.amount = '';
-           
+        expenseData.name = '';
+        expenseData.amount = '';
+
     }
 }
 
 const cancel = () => {
     expenseData.name = '';
     expenseData.amount = '';
-    
+
 }
 
-const expenseDateFormatted = computed({
-  get() {
-    return expenseData.created_at ? expenseData.created_at.split('T')[0] : '';
-  },
-  set(value) {
-    const currentTime = expenseData.created_at 
-      ? expenseData.created_at.split('T')[1] 
-      : '00:00:00.000Z';
-    
-    expenseData.created_at = `${value}T${currentTime}`;
-  }
-});
+
+
+
 </script>

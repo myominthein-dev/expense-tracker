@@ -1,11 +1,11 @@
 <template>
 
-    <header class="dark:bg-slate-900 dark:text-gray-200 border-b border-green-900">
+    <header class="dark:bg-slate-900 dark:text-gray-200 border-b border-gray-600">
 
         <div class="container py-3 grid grid-cols-3 ">
 
-            <RouterLink to="/">
-                <h1 class="text-xl  text-gray-400 font-semibold font-mono">Track<span class="text-red-600">er</span></h1>
+            <RouterLink class="flex items-center " to="/">
+                <h1 class="text-xl text-gray-400 font-semibold font-mono">Track<span class="text-red-600 ">er</span></h1>
             </RouterLink>
 
 
@@ -35,11 +35,11 @@
 
                     </div>
 
-                    <p  class="text-xl text-gray-400 font-semibold font-mono flex items-center justify-center " v-if="authenticatedUserInfo">Hello! {{ authenticatedUserInfo.name }}</p>
+                    <p  class="text-lg text-gray-400 font-semibold font-mono flex items-center justify-center " v-if="authenticatedUserInfo">Hello! {{ authenticatedUserInfo.name }}</p>
                   
 
                         
-                      <Button class="btn border-red-400! text-red-400!"  text   icon="pi pi-user" v-if="authenticatedUserInfo" @click='signOut'>Sign Out</Button>
+                      <Button class="btn border-red-400! hover:border-red-500! hover:text-red-500! text-red-400!"  text   icon="pi pi-user" v-if="authenticatedUserInfo" @click='signOut'>Sign Out</Button>
                    
                 </div>
 

@@ -1,7 +1,7 @@
 <template>
     <div class="container py-5  overflow-hidden">
         <div v-if="userData">
-            <h2 class="text-xl text-center text-gray-500 font-semibold">You've joined on {{ joinedData }}</h2>
+            <h2 class="text-xl text-center text-gray-400 font-semibold">You've joined on {{ joinedData }}</h2>
 
             <div class="grid grid-cols-3 gap-5 mt-5 w-full">
 
@@ -19,23 +19,24 @@
                         </Button>
                     </div>
 
-                    <DataTable   />
+                    <DataTable />
 
                     <div class="min-h-[100px] border border-gray-500  p-4 rounded-lg mt-5">
 
-                       <h2 class="text-lg font-semibold text-gray-400"> Date - {{ new Date().toISOString().split('T')[0] }}</h2>
+                        <h2 class="text-lg font-semibold text-gray-400"> Date - {{ new
+                            Date().toLocaleDateString('en-CA',{timeZone : "Asia/Yangon"}) }}</h2>
                         <div class="grid grid-cols-3 gap-4 mt-5">
                             <div>
                                 <h4 class="text-green-400  font-semibold">Total Income</h4>
-                                <p class="text-xl">10000</p>
+                                <p class="text-xl">{{ expenseStore.todayCalculation.todayIncome }}</p>
                             </div>
                             <div>
                                 <h4 class="text-red-400  font-semibold">Total Expense</h4>
-                                <p class="text-xl">5000</p>
+                                <p class="text-xl">{{ expenseStore.todayCalculation.todayExpense }}</p>
                             </div>
                             <div>
-                                <h4 class="text-lg">Balance</h4>
-                                <p class="text-xl">5000</p>
+                                <h4 class="font-semibold">Balance</h4>
+                                <p class="text-xl">{{ expenseStore.todayCalculation.todayBalance }}</p>
                             </div>
                         </div>
                     </div>
@@ -51,7 +52,7 @@
 
 <script setup>
 import { supabase } from '@/lib/supabaseClient';
-import { computed, onMounted, ref, reactive } from 'vue';
+import { computed, onMounted, ref, reactive, onBeforeMount } from 'vue';
 import { useAuthStore } from '@/stores/auth';
 import { InputText } from 'primevue';
 import { ProgressSpinner } from 'primevue';
@@ -64,12 +65,23 @@ const isLoading = ref(false)
 const store = useAuthStore();
 
 const expenseStore = useExpenseStore()
+const expenses = ref()
+onBeforeMount(() => {
+ expenses.value = computed(() => expenseStore.getExpenses)
+
+})
 
 const joinedData = ref('')
 
-const expenses = computed(() => expenseStore.getExpenses)
 
 const isExpense = ref(true)
+const todayExpense = ref(0.00);
+const todayIncome = ref(0.00);
+const todayBalance = ref(0.00);
+
+
+
+
 
 const toggleExpense = () => {
     isExpense.value = true
@@ -90,7 +102,7 @@ const getUserInfo = async (id) => {
 }
 
 onMounted(async () => {
-    
+
     const { data: { user }, error } = await supabase.auth.getUser();
 
     if (!error) {
@@ -105,7 +117,6 @@ onMounted(async () => {
             store.setAuthenticatedUserInfo(profile)
         }
 
-        
     }
 
 })

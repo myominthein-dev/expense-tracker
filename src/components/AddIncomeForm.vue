@@ -1,88 +1,102 @@
 <template>
-     <div class="flex flex-col gap-5">
+    <div class="flex flex-col gap-5">
 
         <div>
-            <label >Date <i class="text-sm text-gray-400 ">(Today - default)</i></label>
-            <DatePicker v-model="incomeDateFormatted" class="mt-3 w-full"/>
+            <label>Date <i class="text-sm text-gray-400 ">(Today - default)</i></label>
+            <DatePicker v-model="incomeData.created_at" class="mt-3 w-full" />
         </div>
-         <div class="inline-flex flex-col gap-2 w-full">
-                <label for="incomeData" class="text-primary-50 font-semibold">Income</label>
-                <InputText id="incomeData" v-model="incomeData.name"
-                    class="bg-white/20! outline-sky-900!  !border-0 !p-2 !text-primary-50 w-full"></InputText>
+        <div class="inline-flex flex-col gap-2 w-full">
+            <label for="incomeData" class="text-primary-50 font-semibold">Income</label>
+            <InputText id="incomeData" v-model="incomeData.name"
+                class="bg-white/20! outline-sky-900!  !border-0 !p-2 !text-primary-50 w-full"></InputText>
 
-            </div>
-            <div class="inline-flex flex-col gap-2 w-full">
-                <label for="amount" class="text-primary-50 font-semibold">Amount</label>
-                <InputText id="amount" v-model="incomeData.amount"
-                    class="bg-white/20! outline-sky-900!  !border-0 !p-2 !text-primary-50 w-full"></InputText>
+        </div>
+        <div class="inline-flex flex-col gap-2 w-full">
+            <label for="amount" class="text-primary-50 font-semibold">Amount</label>
+            <InputText id="amount" v-model="incomeData.amount"
+                class="bg-white/20! outline-sky-900!  !border-0 !p-2 !text-primary-50 w-full"></InputText>
 
-            </div>
+        </div>
 
 
-            <div class="flex gap-3 ">
-                <Button text @click="cancel"
-                    class="!p-2 rounded-lg w-full flex items-center justify-center !text-primary-50 !border !border-white/30 hover:!bg-white/10">Cancel</Button>
-                <Button text @click="addIncome"
-                    class="!p-2 rounded-lg w-full flex items-center justify-center !text-primary-50 !border !border-white/30 hover:!bg-white/10">
+        <div class="flex gap-3 ">
+            <Button text @click="cancel"
+                class="!p-2 rounded-lg w-full flex items-center justify-center !text-primary-50 !border !border-white/30 hover:!bg-white/10">Cancel</Button>
+            <Button text @click="addIncome"
+                class="!p-2 rounded-lg w-full flex items-center justify-center !text-primary-50 !border !border-white/30 hover:!bg-white/10">
 
-                    <div v-if="isLoading" class="flex items-center  justify-center gap-2">
-                        <ProgressSpinner class="size-5!" />
-                        <ProgressSpinner class="size-5!" />
+                <div v-if="isLoading" class="flex items-center  justify-center gap-2">
+                    <ProgressSpinner class="size-5!" />
+                    <ProgressSpinner class="size-5!" />
 
-                    </div>
+                </div>
 
-                    <span v-if="!isLoading">Add Income</span>
+                <span v-if="!isLoading">Add Income</span>
 
-                </Button>
-            </div>
+            </Button>
+        </div>
 
     </div>
 </template>
 
 <script setup>
 
-import { reactive, ref,computed } from 'vue';
+import { reactive, ref, computed } from 'vue';
 
 import { InputText } from 'primevue';
 
-import {DatePicker} from 'primevue';
+import { DatePicker } from 'primevue';
 import { supabase } from '@/lib/supabaseClient';
 import { ProgressSpinner } from 'primevue';
 import { useExpenseStore } from '@/stores/expense';
 
-const expenseStore  = useExpenseStore();
+const expenseStore = useExpenseStore();
 
 
 const incomeData = reactive({
     name: '',
     amount: '',
-    created_at : new Date().toISOString() // Default to today's date
+    created_at: new Date().toLocaleDateString('en-CA', {
+        timeZone: 'Asia/Yangon',
+    })
 })
 
 const isLoading = ref(false);
 
 const incomeCategoryId = 2
+
 const addIncome = async () => {
-    const {data:{user}, error} = await supabase.auth.getUser();
+    isLoading.value = true;
+    try {
+        const { data: { user }, error } = await supabase.auth.getUser();
 
-    const incomeToSave = {
-        name: incomeData.name,
-        amount: incomeData.amount,
-        created_at: new Date(incomeData.created_at).toISOString(),
-        user_id: user.id,
-        category_id : incomeCategoryId
-    };
-    if (!error) {
-        console.log(incomeToSave);
-        
-        const {data ,error} = await supabase.from('expenses').insert(incomeToSave).select();
+        const incomeToSave = {
+            name: incomeData.name,
+            amount: incomeData.amount,
+            created_at: new Date(incomeData.created_at).toLocaleDateString('en-CA', {
+                timeZone: 'Asia/Yangon',
+            }),
+            user_id: user.id,
+            category_id: incomeCategoryId
+        };
+        if (!error) {
+            console.log(incomeToSave);
 
-        if (data) {
-         expenseStore.setExpense(data[0]);
+            const { data, error } = await supabase.from('expenses').insert(incomeToSave).select();
+
+            if (data) {
+                expenseStore.setExpense(data[0]);
+                isLoading.value = false;
+            }
+
+            incomeData.name = '';
+            incomeData.amount = '';
+
         }
-        
-    }
 
+    } catch (err) {
+        isLoading.value = false;
+    }
 }
 
 const cancel = () => {
@@ -90,19 +104,7 @@ const cancel = () => {
     incomeData.amount = '';
 }
 
-const incomeDateFormatted = computed({
-  get() {
-    return incomeData.created_at ? incomeData.created_at.split('T')[0] : '';
-  },
-  set(value) {
-    const currentTime = incomeData.created_at 
-      ? incomeData.created_at.split('T')[1] 
-      : '00:00:00.000Z';
-    
-    incomeData.created_at = `${value}T${currentTime}`;
-  }
-});
 
 
 
-</script> 
+</script>
