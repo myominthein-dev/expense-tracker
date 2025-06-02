@@ -24,10 +24,10 @@
 
 
         <div class="flex gap-3">
-            <Button text @click="cancel"
-                class="!p-2 rounded-lg w-full flex items-center justify-center !text-primary-50 !border !border-white/30 hover:!bg-white/10">Cancel</Button>
+            <Button text @click="handleClear"
+                class="primary-btn">Clear</Button>
             <Button text @click="addExpense"
-                class="!p-2 rounded-lg w-full flex items-center justify-center !text-primary-50 !border !border-white/30 hover:!bg-white/10">
+                class="primary-btn">
 
                 <div v-if="isLoading" class="flex items-center  justify-center gap-2">
                     <ProgressSpinner class="size-5!" />
@@ -52,6 +52,7 @@ import { supabase } from '@/lib/supabaseClient';
 
 import { ProgressSpinner } from 'primevue';
 import { useExpenseStore } from '@/stores/expense';
+import Button from 'primevue/button';
 
 const expenseStore = useExpenseStore()
 const isLoading = ref(false)
@@ -84,7 +85,7 @@ const addExpense = async () => {
             const { data, error } = await supabase.from('expenses').insert({ ...expenseInfo, user_id: user.id }).select()
 
 
-            if (data) {
+            if (!error) {
                 expenseStore.setExpense(data[0]);
             }
 
@@ -101,10 +102,12 @@ const addExpense = async () => {
     }
 }
 
-const cancel = () => {
+const handleClear = () => {
     expenseData.name = '';
     expenseData.amount = '';
-
+    expenseData.created_at = new Date().toLocaleDateString('en-CA', {
+        timeZone: 'Asia/Yangon',
+    })
 }
 
 

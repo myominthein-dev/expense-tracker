@@ -40,7 +40,7 @@ export const useExpenseStore = defineStore("expense", () => {
   };
 
   const setExpenses = (params) => {
-    console.log("store", params);
+    
     expenses.value = params;
   };
 
@@ -49,5 +49,22 @@ export const useExpenseStore = defineStore("expense", () => {
     expenses.value = expenses.value ? [...expenses.value, param] : [param];
   };
 
-  return { setExpense, setExpenses, getExpenses, getDynamicId, setDynamicId, todayCalculation };
+  const deleteExpense = (id) => {
+    
+    if (expenses.value) {
+      expenses.value = expenses.value.filter((expense) => expense.id !== id);
+    }
+  }
+
+  const updateExpense = (id, updatedExpense) => {
+    if (expenses.value) {
+      console.log(updatedExpense);
+    
+      expenses.value = expenses.value.map((expense) => {
+       return  expense.id == id ? {...expense, ...updatedExpense} : expense;
+      })
+    }
+  }
+
+  return { setExpense, setExpenses, getExpenses, getDynamicId, setDynamicId, todayCalculation, deleteExpense, updateExpense };
 });

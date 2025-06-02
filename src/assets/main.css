@@ -19,3 +19,8 @@
 .p-inputtext {
     @apply bg-white/20! text-white! border-0! focus:ring-0! focus:border-0! rounded!;
 }
+
+
+.primary-btn {
+    @apply !p-2 rounded-lg w-full flex items-center justify-center !text-primary-50 !border !border-white/30 hover:!bg-white/10 cursor-pointer
+}

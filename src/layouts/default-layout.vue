@@ -1,10 +1,10 @@
 <template>
 
     
-<main class="flex flex-col min-h-screen ">
+<main class="flex flex-col min-h-screen relative ">
         <Header />
 
-        <section class="mx-auto w-full h-full flex-grow  px-4 sm:p-0">
+        <section class="mx-auto w-full h-full flex-grow  px-2 sm:p-0">
             <SignInForm />
             <SignUpForm/>
             <slot />

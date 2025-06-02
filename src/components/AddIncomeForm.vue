@@ -21,9 +21,9 @@
 
         <div class="flex gap-3 ">
             <Button text @click="cancel"
-                class="!p-2 rounded-lg w-full flex items-center justify-center !text-primary-50 !border !border-white/30 hover:!bg-white/10">Cancel</Button>
+                class="primary-btn">Cancel</Button>
             <Button text @click="addIncome"
-                class="!p-2 rounded-lg w-full flex items-center justify-center !text-primary-50 !border !border-white/30 hover:!bg-white/10">
+                class="primary-btn">
 
                 <div v-if="isLoading" class="flex items-center  justify-center gap-2">
                     <ProgressSpinner class="size-5!" />
@@ -49,6 +49,7 @@ import { DatePicker } from 'primevue';
 import { supabase } from '@/lib/supabaseClient';
 import { ProgressSpinner } from 'primevue';
 import { useExpenseStore } from '@/stores/expense';
+import Button from 'primevue/button';
 
 const expenseStore = useExpenseStore();
 
