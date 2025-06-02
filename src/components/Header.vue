@@ -41,7 +41,7 @@
                         
                       <Button class="btn border-red-400! hidden! md:block! hover:border-red-500! hover:text-red-500! text-red-400!"  text   icon="pi pi-user" v-if="authenticatedUserInfo" @click='signOut'>Sign Out</Button>
 
-                     <Button class=""  text v-if="authenticatedUserInfo"  @click='visible = true'>
+                     <Button class="md:hidden"  text v-if="authenticatedUserInfo"  @click='visible = true'>
                         <Menu />
                      </Button>
                    
