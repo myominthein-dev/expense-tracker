@@ -6,6 +6,8 @@ import { onBeforeMount, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthStore } from './stores/auth';
 import { useExpenseStore } from './stores/expense';
+import Toast from '@/volt/Toast.vue';
+
 
 const router = useRouter();
 const store = useAuthStore();
@@ -46,7 +48,7 @@ onBeforeMount(async () => {
       .eq('user_id', user.id);
       
       expenseStore.setExpenses(data);
-    }
+    } 
     
   }
 
@@ -67,6 +69,7 @@ onBeforeMount(async () => {
 
 <template>
   <default-layout>
+    <Toast />
     <router-view /> 
   </default-layout>
 </template>

@@ -51,6 +51,9 @@ import { ProgressSpinner } from 'primevue';
 import { useExpenseStore } from '@/stores/expense';
 import Button from 'primevue/button';
 
+import { useToast } from 'primevue/usetoast';
+
+const toast = useToast();
 const expenseStore = useExpenseStore();
 
 
@@ -81,12 +84,19 @@ const addIncome = async () => {
             category_id: incomeCategoryId
         };
         if (!error) {
-            console.log(incomeToSave);
+             if (!incomeData.name || !incomeData.amount) {
+                isLoading.value = false;
+                toast.add({ severity: 'error', summary: 'Error', detail: 'Fill the form carefully!', life: 3000 });
+
+                return;
+            }
 
             const { data, error } = await supabase.from('expenses').insert(incomeToSave).select();
 
             if (data) {
                 expenseStore.setExpense(data[0]);
+                toast.add({ severity: 'success', summary: 'Success', detail: 'Income added successfully!', life: 3000 });
+
                 isLoading.value = false;
             }
 

@@ -6,7 +6,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 .btn {
-    @apply text-xs  w-[90px]! py-1! bg-transparent!
+    @apply text-xs! md:text-sm w-[80px]! bg-transparent!
 }
 
 .container {
@@ -23,4 +23,45 @@
 
 .primary-btn {
     @apply !p-2 rounded-lg w-full flex items-center justify-center !text-primary-50 !border !border-white/30 hover:!bg-white/10 cursor-pointer
+}
+
+
+.swal2-modal {
+  @apply rounded-2xl max-w-[400px] !text-sm !bg-gray-300
+}
+
+.swal2-icon {
+  @apply size-[40px] !relative
+}
+
+.swal2-icon-content {
+  @apply !text-[30px]
+}
+
+.swal2-confirm {
+  @apply py-1
+}
+
+.swal2-cancel {
+  @apply  py-1
+}
+
+.swal2-x-mark {
+  @apply !relative 
+}
+
+.swal2-x-mark-line-left {
+  @apply !w-[30px]  !absolute  !top-[18px] !left-[5px]
+}
+
+.swal2-x-mark-line-right { 
+  @apply !w-[30px] !absolute !top-[18px] !right-[5px]
+}
+
+.swal2-success-line-tip {
+    @apply !relative !top-[24px] !left-[5px]
+}
+
+.swal2-success-line-long {
+    @apply !relative !top-[21px] !-left-[3px]
 }

@@ -30,6 +30,7 @@ export const useExpenseStore = defineStore("expense", () => {
       (acc, curr) => acc + parseFloat(curr.amount),
       0.0
     );
+    
     const todayBalance = todayIncome - todayExpense;
 
     return {todayIncome, todayExpense, todayBalance}
@@ -45,8 +46,12 @@ export const useExpenseStore = defineStore("expense", () => {
   };
 
   const setExpense = (param) => {
-    console.log("store 2", param);
+    
     expenses.value = expenses.value ? [...expenses.value, param] : [param];
+  };
+
+  const resetExpense = () => {
+    expenses.value = null;
   };
 
   const deleteExpense = (id) => {
@@ -66,5 +71,5 @@ export const useExpenseStore = defineStore("expense", () => {
     }
   }
 
-  return { setExpense, setExpenses, getExpenses, getDynamicId, setDynamicId, todayCalculation, deleteExpense, updateExpense };
+  return { setExpense, setExpenses, resetExpense, getExpenses, getDynamicId, setDynamicId, todayCalculation, deleteExpense, updateExpense };
 });

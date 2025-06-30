@@ -6,7 +6,7 @@
                     class="!p-2 w-full rounded-lg flex items-center justify-center !text-primary-50  hover:!bg-white/10">Add
                     Expense</Button>
                 <Button text @click="incomeTab" :class="(isIncomeForm ? 'bg-white/10!' : '')"
-                    class="!p-2 rounded-lg w-full flex items-center justify-center !text-primary-50  hover:!bg-white/10">
+                    class="!p-2 rounded-lg w-full flex items-center justify-center text-primary-50!  hover:!bg-white/10">
                     Add Income
                 </Button>
             </div>

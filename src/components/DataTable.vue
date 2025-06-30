@@ -14,6 +14,11 @@
             </thead>
             <tbody>
 
+                <tr  class="hidden last:table-row">
+                    <td colspan="6" >
+                        <EmptyData />
+                    </td>
+                </tr>
                 <tr v-for="(e, i) in sortedExpenses?.filter(expense => expense.category_id == dynamicId)" :key="i">
                     <th>{{ i + 1 }}</th>
                     <td class="text-nowrap">{{ e.name }}</td>
@@ -27,12 +32,13 @@
                     </td>
                 </tr>
 
+
             </tbody>
         </table>
 
         <!-- dialog -->
 
-
+        
         <Dialog style="background-image: radial-gradient(circle at left top, var(--p-slate-800), var(--p-slate-950))"
             class=" border border-gray-600!" v-model:visible="visible" modal :style="{ width: '25rem' }">
 
@@ -99,6 +105,37 @@ import { InputText } from 'primevue';
 import { supabase } from '@/lib/supabaseClient';
 import Button from 'primevue/button';
 
+
+import ConfirmPopup from 'primevue/confirmpopup';
+
+import { useConfirm } from "primevue/useconfirm";
+import EmptyData from './EmptyData.vue';
+
+const confirm = useConfirm();
+
+const acceptCallback = (event) => {
+    // Handle the accept action
+    console.log("Accepted:", event);
+};
+const rejectCallback = (event) => {
+    // Handle the reject action
+    console.log("Rejected:", event);
+};
+const isVisible = ref(false);
+
+const openPopup = (event) => {
+    confirm.require({
+        target: event.currentTarget,
+        message: 'Are you sure you want to proceed?',
+        header: 'Confirmation',
+        onShow: () => {
+            isVisible.value = true;
+        },
+        onHide: () => {
+            isVisible.value = false;
+        }
+    });
+}
 const expenseStore = useExpenseStore();
 const authStore = useAuthStore();
 const expenseData = ref([]);
@@ -146,6 +183,7 @@ const handleSetting = (id) => {
 }
 
 const handleUpdate = async (id) => {
+    
     isUpdateLoading.value = true;
     try {
         const authUser = computed(() => authStore.getAuthenticatedUser);
@@ -173,6 +211,7 @@ const handleUpdate = async (id) => {
 }
 
 const handleDelete = async (id) => {
+    openPopup(event);
     const authUser = computed(() => authStore.getAuthenticatedUser);
 
     try {

@@ -1,12 +1,11 @@
 <template>
     <div class="flex flex-col gap-5">
 
-
-
+        
         <div>
             <label>Date <i class="text-sm text-gray-400 ">(Today - default)</i></label>
 
-            <DatePicker v-model="expenseData.created_at" variant="filled" class=" mt-3 w-full" />
+            <DatePicker  v-model="expenseData.created_at" variant="filled" class=" mt-3 w-full" />
         </div>
         <div class="inline-flex flex-col gap-2 w-full">
             <label for="expense" class="text-primary-50 font-semibold">Expense</label>
@@ -53,10 +52,11 @@ import { supabase } from '@/lib/supabaseClient';
 import { ProgressSpinner } from 'primevue';
 import { useExpenseStore } from '@/stores/expense';
 import Button from 'primevue/button';
-
 const expenseStore = useExpenseStore()
 const isLoading = ref(false)
+import { useToast } from 'primevue/usetoast';
 
+const toast = useToast();
 
 const expenseData = reactive({
     name: '',
@@ -78,15 +78,24 @@ const addExpense = async () => {
             created_at: new Date(expenseData.created_at).toLocaleDateString('en-CA', {
                 timeZone: 'Asia/Yangon',
             })
-        }
+        }                           
 
 
         if (!error) {
+
+            if (!expenseInfo.name || !expenseInfo.amount) {
+                isLoading.value = false;
+                toast.add({ severity: 'error', summary: 'Error', detail: 'Fill the form carefully!', life: 3000 });
+
+                return;
+            }
+
             const { data, error } = await supabase.from('expenses').insert({ ...expenseInfo, user_id: user.id }).select()
 
 
             if (!error) {
                 expenseStore.setExpense(data[0]);
+                toast.add({ severity: 'success', summary: 'Success', detail: 'Expense added successfully!', life: 3000 });
             }
 
             isLoading.value = false;

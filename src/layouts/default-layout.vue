@@ -4,10 +4,12 @@
 <main class="flex flex-col min-h-screen relative ">
         <Header />
 
-        <section class="mx-auto w-full h-full flex-grow  px-2 sm:p-0">
+        <section class="mx-auto w-full h-full  flex items-center justify-center flex-grow  px-2 sm:p-0">
             <SignInForm />
             <SignUpForm/>
-            <slot />
+            <div class= "h-full">
+                <slot />
+            </div>
         </section>
 
         <Footer />

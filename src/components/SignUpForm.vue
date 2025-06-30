@@ -68,7 +68,10 @@ import { useAuthStore } from '@/stores/auth';
 import { supabase } from '@/lib/supabaseClient';
 import { useRouter } from 'vue-router';
 import {ProgressSpinner} from 'primevue';
+import Swal from 'sweetalert2';
+import { useToast } from 'primevue/usetoast';
 
+const toast = useToast();
 const store = useAuthStore()
 const router = useRouter()
 const isLoading = ref(false)
@@ -84,8 +87,18 @@ const userInfo = reactive({
 const signUp = async () => {
     
     isLoading.value = true
-   
+
     try {
+        if (!userInfo.full_name || !userInfo.email || !userInfo.password) {
+        Swal.fire({
+            icon : 'error',
+            title : 'Oops...',
+            text : 'Please fill in all fields.',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#3085d6',
+        })
+        return
+       }
 
         const { data: { user }, error } = await supabase.auth.signUp({ 'email': userInfo.email, 'password': userInfo.password })
 
@@ -101,19 +114,38 @@ const signUp = async () => {
         }
 
         if (!error) {
-
+            toast.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: 'You have signed up successfully.',
+                life: 3000
+            });
             userInfo.email = ''
             userInfo.password = ''
             userInfo.full_name = ''
-            store.changeStatusSignUp()
+            
 
             router.push('/')
+        } else {
+            Swal.fire({
+                icon : 'error',
+                title : 'Invalid',
+                text : error.message,
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#3085d6',
+            })
         }
     } catch (err) {
-        console.log(err);
+        Swal.fire({
+            icon : 'error',
+            title : 'Invalid',
+            text : 'An error occurred while signing up. Please try again later.',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#3085d6',
+        })
     } finally {
         isLoading.value = false
-
+        store.changeStatusSignUp()
     }
 }
 

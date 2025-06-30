@@ -54,6 +54,10 @@ import { useAuthStore } from '@/stores/auth';
 import { supabase } from '@/lib/supabaseClient';
 import {ProgressSpinner} from 'primevue';
 import { useRouter } from 'vue-router';
+import { useToast } from 'primevue/usetoast';
+import Swal from 'sweetalert2';
+
+const toast = useToast()
 
 const isLoading = ref(false)
 
@@ -69,9 +73,20 @@ const userInfo = reactive({
 const visible = computed(() => store.getStatusSignIn)
 
 const signIn = async () => {
+    isLoading.value = true
 
     try {
-        isLoading.value = true
+
+        if (!userInfo.email || !userInfo.password) {
+            Swal.fire({
+                icon : 'error',
+                title : 'Invalid',
+                text : 'Please fill in all fields.',
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#3085d6',
+            })
+            return
+        }
         const { data, error } = await supabase.auth.signInWithPassword({
             'email' : userInfo.email,
             'password' : userInfo.password
@@ -80,9 +95,22 @@ const signIn = async () => {
 
         if(!error) {
             router.push('/')
-            store.changeStatusSignIn()
             userInfo.email = ''
             userInfo.password = ''  
+            toast.add({
+                severity: 'success',
+                summary: 'Success',
+                detail: 'You have signed in successfully.',
+                life: 3000
+            });
+        } else {
+            Swal.fire({
+                icon : 'error',
+                title : 'Invalid',
+                text : error.message,
+                confirmButtonText: 'OK',
+                confirmButtonColor: '#3085d6',
+            })
         }
 
         
@@ -90,21 +118,13 @@ const signIn = async () => {
         console.log(err)
     } finally {
         isLoading.value = false
+        userInfo.email = ''
+        userInfo.password = '' 
+        store.changeStatusSignIn()
     }
 
 }
 
-
-const addName = async () => {
-    const { data, error } = await supabase
-        .from('users')
-        .insert([
-            { 'full_name': "Myo Min " },
-        ])
-        .select()
-
-    console.log(data)
-}
 
 
 

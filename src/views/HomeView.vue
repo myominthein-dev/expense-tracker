@@ -28,17 +28,17 @@
                         <div class="grid grid-cols-3 gap-4 mt-5">
                             <div class="col-span-3 lg:col-span-1 flex justify-between lg:flex-col">
                                 <h4 class="text-green-400  font-semibold">Total Income</h4>
-                                <p class="text-xl">{{ expenseStore.todayCalculation.todayIncome }}</p>
+                                <p class="text-xl">{{ expenseStore.todayCalculation.todayIncome ?? '0'  }}</p>
                             </div>
                             <div class="col-span-3 lg:col-span-1 flex justify-between lg:flex-col">
                                 <h4 class="text-red-400  font-semibold">Total Expense</h4>
-                                <p class="text-xl">{{ expenseStore.todayCalculation.todayExpense }}</p>
+                                <p class="text-xl">{{ expenseStore.todayCalculation.todayExpense ?? '0'  }}</p>
                             </div>
                             <div class="col-span-3 lg:col-span-1 flex justify-between lg:flex-col">
                                 <h4 :class="(expenseStore.todayCalculation.todayBalance > 0 ? 'text-green-400' : 'text-red-400')"
                                     class="font-semibold">Balance</h4>
                                 <p :class="(expenseStore.todayCalculation.todayBalance > 0 ? 'text-green-400' : 'text-red-400')"
-                                    class="text-xl">{{ expenseStore.todayCalculation.todayBalance }}</p>
+                                class="text-xl">{{ expenseStore.todayCalculation.todayBalance }}</p>
                             </div>
                         </div>
                     </div>
@@ -66,8 +66,9 @@ import ToggleForms from '@/components/ToggleForms.vue'
 import { useExpenseStore } from '@/stores/expense';
 import DataTable from '@/components/DataTable.vue';
 import Button from 'primevue/button';
+import { useRouter } from 'vue-router';
 
-
+const router = useRouter();
 const isLoading = ref(false)
 
 const store = useAuthStore();
@@ -105,6 +106,47 @@ const getUserInfo = async (id) => {
 
     return info;
 }
+
+
+onBeforeMount(async () => {
+
+  
+  const {data:{user}, error} = await supabase.auth.getUser();
+
+
+  if (!error) {
+    const userInfo = await getUserInfo(user.id);
+   if (userInfo) {
+    const userData = {
+      name: userInfo.full_name,
+      joinedDate: new Date(userInfo.created_at).toLocaleDateString(),
+    }
+
+    store.setAuthenticatedUserInfo(userData)
+
+   
+    const {data} = await supabase
+      .from('expenses')
+      .select('*')
+      .eq('user_id', user.id);
+      
+      expenseStore.setExpenses(data);
+    } 
+    
+  }
+
+
+  if (store.getAuthenticatedUserInfo) {
+
+    store.setAuthenticatedUser(user)
+    router.push('/')
+
+  } else {
+
+    router.push('/guest')
+  }
+
+})
 
 onMounted(async () => {
 
