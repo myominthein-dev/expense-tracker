@@ -1,7 +1,5 @@
 <template>
     <div>
-
-
         <Dialog v-model:visible="visible" pt:root:class="!border-0 !bg-transparent"
             pt:mask:class="backdrop-blur-sm !pointer-event-none">
             <template #container>

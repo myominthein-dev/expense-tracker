@@ -27,7 +27,7 @@
 
 
 .swal2-modal {
-  @apply rounded-2xl max-w-[400px] !text-sm !bg-gray-300
+  @apply rounded-2xl max-w-[300px] sm:max-w-[400px] !text-sm !bg-gray-300
 }
 
 .swal2-icon {

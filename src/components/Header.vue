@@ -14,10 +14,10 @@
                 <nav v-if="authenticatedUserInfo" class=" flex items-center justify-center">
                     <ul class="flex gap-4">
                         <li>
-                            <router-link to="/" class="text-gray-500 hover:text-gray-700">Home</router-link>
+                            <router-link :class="route.path == '/' ? 'text-gray-500 hover:text-gray-700' : 'text-slate-700 hover:text-slate-500'" to="/" class="font-semibold">Home</router-link>
                         </li>
                         <li>
-                            <router-link to="/history" class="text-gray-500 hover:text-gray-700">History</router-link>
+                            <router-link to="/history" :class="route.path == '/history' ? 'text-gray-500 hover:text-gray-700' : 'text-slate-700 hover:text-slate-500'" class="font-semibold" >History</router-link>
                         </li>
                     </ul>
                 </nav>
@@ -69,13 +69,13 @@
 
             <ul class="flex flex-col gap-3 mt-5">
 
-                <router-link to="/" class="text-gray-300 hover:text-gray-100">
-                    <li class="primary-btn justify-start!">Home</li>
+                <router-link to="/" @click="visible = false" class="text-gray-300 hover:text-gray-100">
+                    <li :class="route.path == '/' ? 'bg-gray-700' : ''" class="primary-btn justify-start!">Home</li>
                 </router-link>
 
 
-                <router-link to="/history" class="text-gray-300 hover:text-gray-100">
-                    <li class="primary-btn justify-start!">History</li>
+                <router-link to="/history" @click="visible = false" class="text-gray-300 hover:text-gray-100">
+                    <li :class="route.path == '/history' ? 'bg-gray-700' : ''" class="primary-btn justify-start!">History</li>
                 </router-link>
 
                 <li class="primary-btn justify-start! border-red-400! text-red-400! hover:text-red-500!"
@@ -94,14 +94,15 @@ import Menu from '../assets/icons/menu.vue';
 import { useAuthStore } from '@/stores/auth';
 import { useExpenseStore } from '@/stores/expense';
 import { supabase } from '@/lib/supabaseClient'
-import { computed, onMounted, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { computed, onMounted, ref, watch } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { useToast } from 'primevue/usetoast';
 
 const toast = useToast();
 const authStore = useAuthStore();
 const expenseStore = useExpenseStore();
 const router = useRouter()
+const route = useRoute();
 const authenticatedUserInfo = computed(() => authStore.getAuthenticatedUserInfo)
 
 import Drawer from 'primevue/drawer';
