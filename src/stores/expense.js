@@ -1,18 +1,25 @@
+import { today } from "@/lib/helper";
 import { defineStore } from "pinia";
 import { computed, reactive, ref } from "vue";
 
 export const useExpenseStore = defineStore("expense", () => {
   const expenses = ref(null);
-
+  const rangedExpenses = ref([]);
   const dynamicId = ref(1);
-
   const getExpenses = computed(() => expenses.value);
+  const getRangedExpenses = computed(() => rangedExpenses.value)
+  const setRangedExpenses = (startDate, endDate) => {
+    if (expenses.value) {
+      const ranged =  expenses.value.filter(e => e.created_at >= startDate && e.created_at <= endDate);
+      rangedExpenses.value = ranged;
+      return ranged;
+    }
+  }
 
+ 
   const getDynamicId = computed(() => dynamicId.value);
 
   const todayCalculation = computed(() => {
-
-    const today = new Date().toLocaleDateString("en-CA",{timeZone : "Asia/Yangon"});
 
     const todayExpenses = expenses.value?.filter(
       (e) => e.created_at === today && e.category_id === 1
@@ -35,6 +42,26 @@ export const useExpenseStore = defineStore("expense", () => {
 
     return {todayIncome, todayExpense, todayBalance}
   });
+
+  const rangedCalculation = computed (() => {
+    
+    const filteredExpenses = rangedExpenses.value?.filter(r => r.category_id == 1);
+    const filteredIncomes  = rangedExpenses.value?.filter(r => r.category_id == 2)
+
+    const expenseAmount = filteredExpenses?.reduce((acc , curr) => {
+      acc += parseFloat(curr.amount)
+      return acc
+    }, 0)
+
+    const incomeAmount = filteredIncomes?.reduce((acc, curr) =>  {
+        acc += parseFloat(curr.amount)
+        return acc
+    }, 0)
+
+    const balance = incomeAmount - expenseAmount 
+
+    return {expenseAmount, incomeAmount, balance}
+  })
 
   const setDynamicId = (id) => {
     dynamicId.value = id;
@@ -71,5 +98,7 @@ export const useExpenseStore = defineStore("expense", () => {
     }
   }
 
-  return { setExpense, setExpenses, resetExpense, getExpenses, getDynamicId, setDynamicId, todayCalculation, deleteExpense, updateExpense };
+  
+
+  return { getExpenses, getDynamicId, getRangedExpenses, setRangedExpenses, setExpense, setExpenses, resetExpense, setDynamicId,  todayCalculation, rangedCalculation, deleteExpense, updateExpense };
 });

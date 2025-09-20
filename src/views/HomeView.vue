@@ -19,7 +19,7 @@
                         </Button>
                     </div>
 
-                    <DataTable />
+                    <DataTable :expenses="expenses" :isToday="true" />
 
                     <div class="min-h-[100px] border border-gray-500  p-4 rounded-lg mt-5">
 
@@ -50,9 +50,6 @@
             <p>Loading...</p>
         </div>
 
-        
-        
-
     </div>
 </template>
 
@@ -67,27 +64,25 @@ import { useExpenseStore } from '@/stores/expense';
 import DataTable from '@/components/DataTable.vue';
 import Button from 'primevue/button';
 import { useRouter } from 'vue-router';
+import { fetchExpenses, isAuthenticated, setAuthInfo } from '@/lib/helper';
 
 const router = useRouter();
 const isLoading = ref(false)
 
-const store = useAuthStore();
+const authStore = useAuthStore();
 
 const expenseStore = useExpenseStore()
-const expenses = ref()
-onBeforeMount(() => {
-    expenses.value = computed(() => expenseStore.getExpenses)
+const expenses = computed(() => expenseStore.getExpenses)
+const userData = computed(() => authStore.getAuthenticatedUserInfo)
+const joinedData = computed(() => authStore.getAuthenticatedUserInfo?.joinedDate )
 
+onBeforeMount(async () => {
+    await setAuthInfo();
+    isAuthenticated('/');
 })
-
-const joinedData = ref('')
 
 
 const isExpense = ref(true)
-
-
-
-
 
 const toggleExpense = () => {
     isExpense.value = true
@@ -99,110 +94,4 @@ const toggleIncome = () => {
     expenseStore.setDynamicId(2)
 }
 
-const userData = computed(() => store.getAuthenticatedUserInfo)
-
-const getUserInfo = async (id) => {
-    const { data: info, error } = await supabase.from('users').select('*').eq('id', id).single();
-
-    return info;
-}
-
-
-onBeforeMount(async () => {
-
-  
-  const {data:{user}, error} = await supabase.auth.getUser();
-
-
-  if (!error) {
-    const userInfo = await getUserInfo(user.id);
-   if (userInfo) {
-    const userData = {
-      name: userInfo.full_name,
-      joinedDate: new Date(userInfo.created_at).toLocaleDateString(),
-    }
-
-    store.setAuthenticatedUserInfo(userData)
-
-   
-    const {data} = await supabase
-      .from('expenses')
-      .select('*')
-      .eq('user_id', user.id);
-      
-      expenseStore.setExpenses(data);
-    } 
-    
-  }
-
-
-  if (store.getAuthenticatedUserInfo) {
-
-    store.setAuthenticatedUser(user)
-    router.push('/')
-
-  } else {
-
-    router.push('/guest')
-  }
-
-})
-
-onMounted(async () => {
-
-    const { data: { user }, error } = await supabase.auth.getUser();
-
-    if (!error) {
-
-        const info = await getUserInfo(user.id)
-        if (info) {
-            const profile = {
-                name: info.full_name,
-                joinedData: new Date(info.created_at).toLocaleDateString()
-            }
-            joinedData.value = profile.joinedData
-            store.setAuthenticatedUserInfo(profile)
-        }
-
-    }
-
-})
-
-const addExpense = async () => {
-
-    isLoading.value = true
-
-
-
-    try {
-        const { data: { user }, error } = await supabase.auth.getUser();
-
-        const { error: insertError } = await supabase
-            .from('expenses')
-            .insert([
-                {
-                    user_id: user.id,
-                    name: expenseData.name, // must match auth.users.id
-                    amount: expenseData.amount,
-                    category_id: 1,
-                },
-            ]);
-
-
-        if (!insertError) {
-
-            userInfo.email = ''
-            userInfo.password = ''
-            userInfo.full_name = ''
-            store.changeStatusSignUp()
-
-            router.push('/')
-        }
-    } catch (err) {
-        console.log(err);
-    } finally {
-        isLoading.value = false
-
-    }
-}
 </script>

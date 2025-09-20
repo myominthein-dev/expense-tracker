@@ -110,17 +110,22 @@ import ConfirmPopup from 'primevue/confirmpopup';
 
 import { useConfirm } from "primevue/useconfirm";
 import EmptyData from './EmptyData.vue';
+import { today } from '@/lib/helper';
+
+const props = defineProps({
+    isToday: {
+        type: Boolean,
+        default: false
+    },
+    expenses : {
+        type: Array,
+        default: () => []
+    }
+});
 
 const confirm = useConfirm();
 
-const acceptCallback = (event) => {
-    // Handle the accept action
-    console.log("Accepted:", event);
-};
-const rejectCallback = (event) => {
-    // Handle the reject action
-    console.log("Rejected:", event);
-};
+
 const isVisible = ref(false);
 
 const openPopup = (event) => {
@@ -139,7 +144,6 @@ const openPopup = (event) => {
 const expenseStore = useExpenseStore();
 const authStore = useAuthStore();
 const expenseData = ref([]);
-const expenses = computed(() => expenseStore.getExpenses);
 const dynamicId = computed(() => expenseStore.getDynamicId);
 const visible = ref(false);
 const isLoading = ref(false);
@@ -151,24 +155,25 @@ const dataToUpdate = ref({
     id: null,
     name: '',
     amount: '',
-    created_at: new Date().toLocaleDateString('en-CA', {
-        timeZone: 'Asia/Yangon',
-    })
+    created_at: today
 });
 
-const today = new Date().toLocaleDateString('en-CA', {
-    timeZone: 'Asia/Yangon',
-})
+
 
 
 const sortedExpenses = computed(() => {
-    return expenses.value?.filter(e => e.created_at == today).sort((a, b) => a.created_at.localeCompare(b.created_at));
+    if (props.isToday) {
+        return props.expenses?.filter(e => e.created_at == today).sort((a, b) => a.created_at.localeCompare(b.created_at));
+    } else {
+    return props.expenses?.sort((a, b) => a.created_at.localeCompare(b.created_at));
+    }
 })
+
 
 
 const handleSetting = (id) => {
     visible.value = true;
-    const expense = expenses.value.find(e => e.id === id);
+    const expense = props.expenses.value.find(e => e.id === id);
     if (expense) {
         dataToUpdate.value = {
             id: expense.id,

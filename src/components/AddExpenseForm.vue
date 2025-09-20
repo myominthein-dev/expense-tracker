@@ -119,7 +119,4 @@ const handleClear = () => {
     })
 }
 
-
-
-
 </script>

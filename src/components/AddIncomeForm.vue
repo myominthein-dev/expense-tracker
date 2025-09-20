@@ -115,7 +115,4 @@ const cancel = () => {
     incomeData.amount = '';
 }
 
-
-
-
 </script>

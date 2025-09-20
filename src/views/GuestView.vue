@@ -1,20 +1,3 @@
-<script setup>
-import { useAuthStore } from '@/stores/auth';
-import { computed, onBeforeMount } from 'vue';
-import { useRouter } from 'vue-router';
-
-const store = useAuthStore();
-const router = useRouter();
-const userInfo = computed(() => store.getAuthenticatedUserInfo);
-
-onBeforeMount(() => {
-  if (userInfo.value) {
-    router.push('/')
-  }
-})
-
-</script>
-
 <template>
   <div class=" flex-grow flex items-center gap-4 justify-center flex-col">
     <h2 class="text-2xl md:text-5xl font-serif font-bold text-gray-500 mb-4">Track Your Expenses</h2>
@@ -24,3 +7,19 @@ onBeforeMount(() => {
     </div>
   </div>
 </template>
+
+<script setup>
+import { isAuthenticated, setAuthInfo } from '@/lib/helper';
+import { useAuthStore } from '@/stores/auth';
+import { onBeforeMount } from 'vue';
+
+
+const store = useAuthStore();
+
+
+onBeforeMount(async () => {
+  await setAuthInfo();
+  isAuthenticated('/');
+})
+
+</script>

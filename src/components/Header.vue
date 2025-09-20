@@ -143,9 +143,5 @@ const signOut = async () => {
         }
     })
 
-
-
 }
-
-
 </script>
