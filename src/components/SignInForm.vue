@@ -113,7 +113,7 @@ const signIn = async () => {
 
         
     } catch (err) {
-        console.log(err)
+        
     } finally {
         isLoading.value = false
         userInfo.email = ''

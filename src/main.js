@@ -9,8 +9,8 @@ import router from './router'
 import PrimeVue from 'primevue/config';
 import Aura from '@primeuix/themes/aura';
 import Material from '@primeuix/themes/material';
-import './assets/main.css'
 import { definePreset } from '@primeuix/themes';
+import './assets/main.css'
 
 import ConfirmationService from 'primevue/confirmationservice';
 import ToastService from 'primevue/toastservice';

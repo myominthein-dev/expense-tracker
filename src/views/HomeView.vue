@@ -81,6 +81,9 @@ onBeforeMount(async () => {
     isAuthenticated('/');
 })
 
+onMounted(async () => {
+    await fetchExpenses();
+})
 
 const isExpense = ref(true)
 

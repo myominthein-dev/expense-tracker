@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 import { computed, reactive, ref } from "vue";
 
 export const useExpenseStore = defineStore("expense", () => {
-  const expenses = ref(null);
+  const expenses = ref([]);
   const rangedExpenses = ref([]);
   const dynamicId = ref(1);
   const getExpenses = computed(() => expenses.value);
@@ -90,7 +90,6 @@ export const useExpenseStore = defineStore("expense", () => {
 
   const updateExpense = (id, updatedExpense) => {
     if (expenses.value) {
-      console.log(updatedExpense);
     
       expenses.value = expenses.value.map((expense) => {
        return  expense.id == id ? {...expense, ...updatedExpense} : expense;
@@ -98,7 +97,12 @@ export const useExpenseStore = defineStore("expense", () => {
     }
   }
 
+  const resetExpenses = () => {
+    expenses.value = [];
+    rangedExpenses.value = [];
+  }
+
   
 
-  return { getExpenses, getDynamicId, getRangedExpenses, setRangedExpenses, setExpense, setExpenses, resetExpense, setDynamicId,  todayCalculation, rangedCalculation, deleteExpense, updateExpense };
+  return { getExpenses, getDynamicId, getRangedExpenses, setRangedExpenses, setExpense, setExpenses, resetExpense, setDynamicId,  todayCalculation, rangedCalculation, deleteExpense, updateExpense, resetExpenses };
 });

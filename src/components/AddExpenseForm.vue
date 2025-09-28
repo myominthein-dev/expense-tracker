@@ -102,7 +102,6 @@ const addExpense = async () => {
 
         }
     } catch (err) {
-        console.log(err);
         isLoading.value = false;
     } finally {
         expenseData.name = '';

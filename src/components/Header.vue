@@ -111,6 +111,7 @@ const visible = ref(false)
 import Swal from 'sweetalert2'
 
 const signOut = async () => {
+    visible.value = false
     Swal.fire({
         title: 'Are you sure?',
         text: "You want to sign out?",
@@ -129,6 +130,7 @@ const signOut = async () => {
                 router.push('/guest')
                 visible.value = false; // Close the drawer after signing out
                 if (!res.error) {
+                    expenseStore.resetExpenses();
                     toast.add({
                         severity: 'success',
                         summary: 'Success',
@@ -138,7 +140,7 @@ const signOut = async () => {
                 }
 
             } catch (err) {
-                console.log(err);
+        
             }     
         }
     })

@@ -208,7 +208,6 @@ const handleUpdate = async (id) => {
             expenseStore.updateExpense(id, updatedData)
         }
     } catch (err) {
-        console.error('Error updating expense:', err);
     } finally {
         isUpdateLoading.value = false;
         visible.value = false;
@@ -229,7 +228,7 @@ const handleDelete = async (id) => {
         }
 
     } catch (err) {
-        console.log(err)
+        
     } finally {
         isDeleteLoading.value = false;
         visible.value = false
