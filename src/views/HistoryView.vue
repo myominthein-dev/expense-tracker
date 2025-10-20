@@ -60,7 +60,7 @@
           </Button>
         </div>
 
-        <DataTable :expenses="rangedExpenses" :isToday="true" />
+        <DataTable :expenses="rangedExpenses" :isToday="false" />
 
         <div class="min-h-[100px] border border-gray-500 p-4 rounded-lg mt-5">
           <div class="flex gap-4">
