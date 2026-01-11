@@ -173,7 +173,7 @@ const sortedExpenses = computed(() => {
 
 const handleSetting = (id) => {
     visible.value = true;
-    const expense = props.expenses.value.find(e => e.id === id);
+    const expense = sortedExpenses.value.find(e => e.id == id);
     if (expense) {
         dataToUpdate.value = {
             id: expense.id,
@@ -205,6 +205,7 @@ const handleUpdate = async (id) => {
         const { data , error } = await supabase.from('expenses').update({...updatedData}).eq('id', id).eq('user_id', authUser.value.id).select();
 
         if (!error) {
+            console.log('ggfff');
             expenseStore.updateExpense(id, updatedData)
         }
     } catch (err) {

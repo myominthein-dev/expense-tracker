@@ -86,12 +86,23 @@ export const useExpenseStore = defineStore("expense", () => {
     if (expenses.value) {
       expenses.value = expenses.value.filter((expense) => expense.id !== id);
     }
+
+    if (rangedExpenses.value) {
+      rangedExpenses.value = rangedExpenses.value.filter((expense) => expense.id !== id);
+    }
   }
 
   const updateExpense = (id, updatedExpense) => {
-    if (expenses.value) {
     
+    if (expenses.value) {
+      
       expenses.value = expenses.value.map((expense) => {
+       return  expense.id == id ? {...expense, ...updatedExpense} : expense;
+      })
+    } 
+     if (rangedExpenses.value) {
+     
+      rangedExpenses.value = rangedExpenses.value.map((expense) => {
        return  expense.id == id ? {...expense, ...updatedExpense} : expense;
       })
     }

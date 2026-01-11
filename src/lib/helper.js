@@ -55,6 +55,7 @@ export const setAuthInfo = async (path) => {
       name: userInfo.full_name,
       joinedDate: new Date(userInfo.created_at).toLocaleDateString(),
     }
+    authStore.setAuthenticatedUser(userInfo)
     authStore.setAuthenticatedUserInfo(userData)
   }
 
