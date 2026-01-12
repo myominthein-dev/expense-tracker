@@ -27,3 +27,16 @@ npm run dev
 ```sh
 npm run build
 ```
+### docker compose cmd for Production
+
+```sh
+docker-compose up -d --build
+
+```
+### docker compose cmd for dev
+
+```sh
+docker-compose -f docker-compose.dev.yml up
+
+
+```
